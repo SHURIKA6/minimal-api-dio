@@ -149,6 +149,11 @@ public class Startup
             }).AllowAnonymous().WithTags("Administradores");
 
             endpoints.MapGet("/administradores", ([FromQuery] int? pagina, IAdministradorServico administradorServico) => {
+                if(pagina.HasValue && pagina.Value < 1)
+                    return Results.BadRequest(new ErrosDeValidacao{
+                        Mensagens = new List<string> { "A página deve ser maior ou igual a 1" }
+                    });
+
                 var adms = new List<AdministradorModelView>();
                 var administradores = administradorServico.Todos(pagina);
                 foreach(var adm in administradores)
@@ -250,8 +255,13 @@ public class Startup
             .RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor" })
             .WithTags("Veiculos");
 
-            endpoints.MapGet("/veiculos", ([FromQuery] int? pagina, IVeiculoServico veiculoServico) => {
-                var veiculos = veiculoServico.Todos(pagina);
+            endpoints.MapGet("/veiculos", ([FromQuery] int? pagina, [FromQuery] string? nome, [FromQuery] string? marca, IVeiculoServico veiculoServico) => {
+                if(pagina.HasValue && pagina.Value < 1)
+                    return Results.BadRequest(new ErrosDeValidacao{
+                        Mensagens = new List<string> { "A página deve ser maior ou igual a 1" }
+                    });
+
+                var veiculos = veiculoServico.Todos(pagina, nome, marca);
 
                 return Results.Ok(veiculos);
             }).RequireAuthorization().WithTags("Veiculos");

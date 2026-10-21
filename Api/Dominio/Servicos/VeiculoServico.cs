@@ -40,12 +40,15 @@ public class VeiculoServico : IVeiculoServico
     public List<Veiculo> Todos(int? pagina = 1, string? nome = null, string? marca = null)
     {
         var query = _contexto.Veiculos.AsQueryable();
+
         if(!string.IsNullOrEmpty(nome))
-        {
-            query = query.Where(v => EF.Functions.Like(v.Nome.ToLower(), $"%{nome}%"));
-        }
+            query = query.Where(v => EF.Functions.Like(v.Nome.ToLower(), $"%{nome.ToLower()}%"));
+
+        if(!string.IsNullOrEmpty(marca))
+            query = query.Where(v => EF.Functions.Like(v.Marca.ToLower(), $"%{marca.ToLower()}%"));
 
         int itensPorPagina = 10;
+        query = query.OrderBy(v => v.Id);
 
         if(pagina != null)
             query = query.Skip(((int)pagina - 1) * itensPorPagina).Take(itensPorPagina);

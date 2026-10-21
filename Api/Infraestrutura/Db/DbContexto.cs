@@ -11,6 +11,11 @@ public class DbContexto : DbContext
         _configuracaoAppSettings = configuracaoAppSettings;
     }
 
+    public DbContexto(DbContextOptions<DbContexto> options) : base(options)
+    {
+        _configuracaoAppSettings = default!;
+    }
+
     public DbSet<Administrador> Administradores { get; set; } = default!;
     public DbSet<Veiculo> Veiculos { get; set; } = default!;
 

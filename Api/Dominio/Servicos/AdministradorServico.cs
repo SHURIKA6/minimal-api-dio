@@ -37,6 +37,7 @@ public class AdministradorServico : IAdministradorServico
         var query = _contexto.Administradores.AsQueryable();
 
         int itensPorPagina = 10;
+        query = query.OrderBy(a => a.Id);
 
         if(pagina != null)
             query = query.Skip(((int)pagina - 1) * itensPorPagina).Take(itensPorPagina);
